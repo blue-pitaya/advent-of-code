@@ -2,9 +2,11 @@ class Node {
   private String name;
   private Node left;
   private Node right;
+  private boolean endsWithZ;
 
   Node(String name) {
     this.name = name;
+    endsWithZ = name.endsWith("Z");
   }
 
   public String getName() {
@@ -25,6 +27,10 @@ class Node {
 
   public Node getRight() {
     return this.right;
+  }
+
+  public boolean endsWithZ() {
+    return endsWithZ;
   }
 }
 
