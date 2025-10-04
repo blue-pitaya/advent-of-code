@@ -114,6 +114,52 @@ void Map_calculate_antinodes(Map *m) {
     }
 }
 
+void Map_calculate_antinodes2(Map *m) {
+    for (int i = 0; i < 255; i++) {
+        const int size = m->nodes[i].size;
+        if (size == 0) {
+            continue;
+        }
+        Point *positions = m->nodes[i].positions;
+        for (int j = 0; j < size; j++) {
+            for (int k = j + 1; k < size; k++) {
+                Point p1 = positions[j];
+                Point p2 = positions[k];
+
+                Point dist1 = {.x = p1.x - p2.x, .y = p1.y - p2.y};
+                int mul = 0;
+                while (true) {
+                    Point antinode = {
+                        .x = p1.x + mul * dist1.x,
+                        .y = p1.y + mul * dist1.y,
+                    };
+                    if (Map_is_on_map(m, antinode)) {
+                        m->antinodes[antinode.x][antinode.y]++;
+                    } else {
+                        break;
+                    }
+                    mul++;
+                }
+
+                Point dist2 = {.x = p2.x - p1.x, .y = p2.y - p1.y};
+                mul = 0;
+                while (true) {
+                    Point antinode = {
+                        .x = p2.x + mul * dist2.x,
+                        .y = p2.y + mul * dist2.y,
+                    };
+                    if (Map_is_on_map(m, antinode)) {
+                        m->antinodes[antinode.x][antinode.y]++;
+                    } else {
+                        break;
+                    }
+                    mul++;
+                }
+            }
+        }
+    }
+}
+
 int Map_count_antinodes(Map *m) {
     int sum = 0;
     for (int y = 0; y < Map_SIZE; y++) {
@@ -139,9 +185,16 @@ Map map = {
 };
 
 int main(void) {
+    // part1
+    // Map_load(&map);
+    // Map_init_nodes(&map);
+    // Map_calculate_antinodes(&map);
+    // int res = Map_count_antinodes(&map);
+
+    // part2
     Map_load(&map);
     Map_init_nodes(&map);
-    Map_calculate_antinodes(&map);
+    Map_calculate_antinodes2(&map);
     int res = Map_count_antinodes(&map);
 
     printf("%d\n", res);
